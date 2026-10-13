@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Something for you 💗</title>
+<meta name="theme-color" content="#ffd6e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Great+Vibes&family=Fredoka:wght@400;500;600;700&family=Kalam:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-1:#fff0f6; --pink-2:#ffd6e7; --pink-3:#ffadd2; --pink-4:#ff85c0;
+    --pink-5:#f759ab; --pink-6:#d6247f; --ink:#3d0d27; --ink-soft:#7a2f57;
+    --card:rgba(255,255,255,.88);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,var(--pink-1) 0%,var(--pink-2) 45%,var(--pink-3) 100%);
+    background-attachment:fixed;overflow:hidden;
+  }
+  #bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .float{position:absolute;bottom:-40px;opacity:.55;animation:rise linear forwards;user-select:none}
+  @keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+
+  main{position:relative;z-index:1;height:100%;display:flex;align-items:center;justify-content:center;padding:20px 16px}
+  .screen{
+    display:none;width:100%;max-width:420px;text-align:center;
+    background:var(--card);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1.5px solid rgba(255,255,255,.9);border-radius:28px;
+    padding:34px 24px 30px;box-shadow:0 20px 50px rgba(235,47,150,.18);
+  }
+  .screen.active{display:block;animation:pop .55s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes pop{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+
+  h1{font-family:'Pacifico',cursive;font-weight:400;font-size:2.1rem;color:var(--pink-6);line-height:1.35;margin-bottom:12px;text-shadow:0 3px 12px rgba(235,47,150,.2)}
+  h2{font-size:1.32rem;font-weight:600;line-height:1.4;margin-bottom:22px}
+  p.sub{color:var(--ink-soft);font-size:1.02rem;line-height:1.55}
+
+  .big-heart{
+    font-size:6.5rem;cursor:pointer;display:inline-block;margin:26px 0 6px;border:none;background:none;
+    animation:beat 1.2s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(235,47,150,.35));
+  }
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.14)}30%{transform:scale(.98)}45%{transform:scale(1.08)}}
+  .hint{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--pink-6);font-weight:700;font-size:.95rem}
+  .arrow{font-size:1.7rem;animation:bob 1s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  .opts{display:grid;gap:12px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  .btn{
+    font-family:inherit;font-size:1.02rem;font-weight:600;color:var(--ink);
+    background:#fff;border:2px solid var(--pink-3);border-radius:18px;padding:14px 12px;cursor:pointer;
+    transition:transform .15s,background .2s,border-color .2s,box-shadow .2s;
+  }
+  .btn:hover{border-color:var(--pink-5);box-shadow:0 6px 16px rgba(235,47,150,.18)}
+  .btn:active{transform:scale(.95)}
+  .btn.primary{background:linear-gradient(135deg,var(--pink-4),var(--pink-6));color:#fff;border:none;box-shadow:0 8px 20px rgba(235,47,150,.35)}
+  .btn.chosen{background:var(--pink-2);border-color:var(--pink-6)}
+
+  .reaction{min-height:52px;margin-top:18px;font-weight:600;color:var(--pink-6);line-height:1.45;opacity:0;transition:opacity .4s}
+  .reaction.show{opacity:1}
+  .next{margin-top:16px;display:none}
+  .next.show{display:inline-flex;animation:pop .4s}
+
+  input[type=range]{width:100%;accent-color:var(--pink-6);height:30px}
+  .slider-val{font-size:2.6rem;margin:6px 0 4px}
+
+  .progress{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
+  .progress span{width:8px;height:8px;border-radius:50%;background:var(--pink-3);transition:all .3s}
+  .progress span.on{width:22px;border-radius:5px;background:var(--pink-6)}
+
+  #letter{min-height:260px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+  .line{font-family:'Kalam',cursive;font-weight:400;font-size:1.32rem;line-height:1.6;color:#3d0d27;animation:pop .6s}
+  .line.final{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.75rem;line-height:1.35;color:#c41d7f;margin-top:8px}
+  .sign{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.6rem;color:var(--ink-soft);margin-top:10px;text-align:right;animation:pop .6s}
+  .tap-area{cursor:pointer}
+  .tap-hint{margin-top:22px}
+
+  .end-emoji{font-size:4.2rem;margin-bottom:10px;animation:beat 1.4s infinite}
+  .note{margin-top:22px;background:var(--pink-1);border:1.5px dashed var(--pink-4);border-radius:16px;padding:12px;font-size:.95rem;color:var(--ink-soft)}
+
+  .maker-link{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;z-index:2}
+  .maker-link button{font-family:inherit;background:rgba(255,255,255,.6);border:1px solid #fff;color:var(--ink-soft);
+    font-size:.8rem;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer}
+  label{display:block;text-align:left;font-weight:700;font-size:.9rem;margin:14px 0 6px}
+  .field{width:100%;font-family:inherit;font-size:1rem;padding:13px 14px;border-radius:14px;border:2px solid var(--pink-3);background:#fff;color:var(--ink);outline:none}
+  .field:focus{border-color:var(--pink-6)}
+  #genOut{display:none;margin-top:18px}
+  #genOut .field{font-size:.85rem}
+  .row{display:flex;gap:10px;margin-top:10px}
+  .row .btn{flex:1}
+  .burst{position:fixed;pointer-events:none;z-index:5;font-size:1.6rem;animation:burst 1.4s ease-out forwards}
+  @keyframes burst{to{transform:translate(var(--dx),var(--dy)) scale(.4) rotate(40deg);opacity:0}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<main>
+  <!-- 0: Intro -->
+  <section class="screen active" id="s0">
+    <h1>Hey <span class="to"></span> 💗</h1>
+    <p class="sub">Someone made this little thing<br>just for you.</p>
+    <button class="big-heart" id="startHeart" aria-label="Open">💗</button>
+    <div class="hint"><span class="arrow">☝️</span>Tap the heart to open</div>
+  </section>
+
+  <!-- 1: Day -->
+  <section class="screen" id="s1">
+    <div class="progress"></div>
+    <h2>First things first…<br>how's your day going? 🌷</h2>
+    <div class="opts">
+      <button class="btn" data-r="Yay! That makes this even better ✨">Pretty amazing ✨</button>
+      <button class="btn" data-r="Okay-ish is okay. Let's make it a little better 🙂">Okay-ish 🙂</button>
+      <button class="btn" data-r="Then take a deep breath. This one's just for you, no stress 🤍">Honestly, tiring 😮‍💨</button>
+    </div>
+    <div class="reaction"></div>
+    <button class="btn primary next">Next →</button>
+  </section>
+
+  <!-- 2: Smile slider -->
+  <section class="screen" id="s2">
+    <div class="progress"></div>
+    <h2>How much do you smile<br>in a day? 😊</h2>
+    <div class="slider-val" id="smileEmoji">🙂</div>
+    <input type="range" id="smile" min="0" max="100" value="40" aria-label="Smile level">
+    <div class="reaction"></div>
+    <button class="btn primary next">Next →</button>
+  </section>
+
+  <!-- 3: Comfort -->
+  <section class="screen" id="s3">
+    <div class="progress"></div>
+    <h2>Pick your comfort thing 🧸</h2>
+    <div class="opts two">
+      <button class="btn" data-r="Fries! The correct answer 🍟 Noted. Someone is taking notes 📝">Fries 🍟</button>
+      <button class="btn" data-r="Ice cream, good choice 🍦 Noted for later 📝">Ice cream 🍦</button>
+      <button class="btn" data-r="Long drives + good songs = perfect 🚗 Noted 📝">Long drive 🚗</button>
+      <button class="btn" data-r="Music heals everything 🎧 Noted 📝">Music 🎧</button>
+      <button class="btn" style="grid-column:1/-1" data-r="Katkati & chaat?! A girl with real taste 😋 Noted, and a chaat date is now pending 📝">Katkati & chaat 😋</button>
+    </div>
+    <div class="reaction"></div>
+    <button class="btn primary next">Next →</button>
+  </section>
+
+  <!-- 3b: Soft toys -->
+  <section class="screen" id="s3b">
+    <div class="progress"></div>
+    <div style="font-size:3.4rem;margin-bottom:8px">🧸</div>
+    <h2>Very important question…<br>which soft toy would you hug first?</h2>
+    <div class="opts two">
+      <button class="btn" data-r="A classic teddy 🧸 Noted. But just saying… {from} gives better hugs 🤭">Classic teddy 🧸</button>
+      <button class="btn" data-r="Bunny! Soft and too cute 🐰 Noted. Though {from} is softer than he looks 🤭">Little bunny 🐰</button>
+      <button class="btn" data-r="Panda, the cutest choice 🐼 Noted. {from} can do the panda hug too, just saying 🤭">Fluffy panda 🐼</button>
+      <button class="btn" data-r="No soft toys? Okay okay 😄 Then a real hug is the only option left 🙈">Not my thing 🙈</button>
+      <button class="btn" style="grid-column:1/-1" data-r="Bold choice 🙈 {from} is officially available for hugs. No returns, no refunds 🤭💗">Skip the teddy, hug <span class="from"></span> 🙈</button>
+    </div>
+    <div class="reaction"></div>
+    <button class="btn primary next">Next →</button>
+  </section>
+
+  <!-- 4: Permission -->
+  <section class="screen" id="s4">
+    <div class="progress"></div>
+    <div style="font-size:3.4rem;margin-bottom:8px">🫶</div>
+    <h2>Can I tell you something honest?</h2>
+    <p class="sub" style="margin-bottom:22px">No pressure. Just read it slowly.</p>
+    <div class="opts two">
+      <button class="btn primary go">Okay 🙈</button>
+      <button class="btn primary go">Go on 💗</button>
+    </div>
+  </section>
+
+  <!-- 5: Letter -->
+  <section class="screen tap-area" id="s5">
+    <div class="progress"></div>
+    <div id="letter"></div>
+    <div class="hint tap-hint" id="letterHint"><span class="arrow">👇</span>Tap anywhere to keep reading</div>
+  </section>
+
+  <!-- 6: Ask -->
+  <section class="screen" id="s6">
+    <div class="progress"></div>
+    <div style="font-size:3.4rem;margin-bottom:8px">🌸</div>
+    <h2>So… would you take one<br>tiny step with <span class="from"></span>?</h2>
+    <p class="sub" style="margin-bottom:22px">Both answers are completely okay. Really.</p>
+    <div class="opts">
+      <button class="btn primary" id="yesBtn">Let's take baby steps 🌸</button>
+      <button class="btn" id="timeBtn">I need a little time 🤍</button>
+    </div>
+  </section>
+
+  <!-- 7a: Yes -->
+  <section class="screen" id="s7a">
+    <div class="end-emoji">🥹💗</div>
+    <h1>One step at a time</h1>
+    <p class="sub">That's all <span class="from"></span> could ever ask for.<br>No rush, no pressure. Just the two of you, slowly.</p>
+    <div class="note">📸 Screenshot this and send it to <b class="from"></b>.<br>Trust me, it'll make their whole day.</div>
+  </section>
+
+  <!-- 7b: Time -->
+  <section class="screen" id="s7b">
+    <div class="end-emoji">🤍</div>
+    <h1>Take all the time you need</h1>
+    <p class="sub"><span class="from"></span> isn't going anywhere.<br>Whenever you're ready, even if it's just a small hello, they'll be right here.</p>
+    <div class="note">📸 Screenshot this and send it to <b class="from"></b>,<br>so they know you saw it.</div>
+  </section>
+
+  <!-- Maker -->
+  <section class="screen" id="maker">
+    <h1>Make your own 💌</h1>
+    <p class="sub">Type two names and share the link.</p>
+    <label for="fromIn">Your name</label>
+    <input class="field" id="fromIn" maxlength="30" placeholder="e.g. Jay" autocomplete="off">
+    <label for="toIn">Their name</label>
+    <input class="field" id="toIn" maxlength="30" placeholder="e.g. Yukta" autocomplete="off">
+    <div class="row"><button class="btn primary" id="genBtn">Create link 💗</button></div>
+    <div id="genOut">
+      <input class="field" id="genLink" readonly>
+      <div class="row">
+        <button class="btn" id="copyBtn">Copy</button>
+        <button class="btn" id="previewBtn">Preview</button>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="backBtn">← Back</button></div>
+  </section>
+</main>
+
+<div class="maker-link"><button id="openMaker">Make your own 💌</button></div>
+
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const clean = s => (s||'').trim().slice(0,30);
+  const FROM = clean(params.get('from') || params.get('s')) || 'Jay';
+  const TO   = clean(params.get('to')   || params.get('r')) || 'Yukta';
+  document.querySelectorAll('.from').forEach(e=>e.textContent=FROM);
+  document.querySelectorAll('.to').forEach(e=>e.textContent=TO);
+  document.title = 'For ' + TO + ' 💗';
+
+  /* floating background */
+  const bg = document.getElementById('bg');
+  const icons = ['💗','💕','🌸','💖','✨','🤍','🎀'];
+  function spawn(){
+    const el = document.createElement('span');
+    el.className = 'float';
+    el.textContent = icons[Math.floor(Math.random()*icons.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.fontSize = (14 + Math.random()*22) + 'px';
+    el.style.animationDuration = (7 + Math.random()*7) + 's';
+    bg.appendChild(el);
+    setTimeout(()=>el.remove(), 15000);
+  }
+  for(let i=0;i<8;i++) setTimeout(spawn, i*400);
+  setInterval(spawn, 900);
+
+  function burst(x,y,n=16){
+    for(let i=0;i<n;i++){
+      const b=document.createElement('span');
+      b.className='burst';
+      b.textContent=icons[i%icons.length];
+      b.style.left=x+'px'; b.style.top=y+'px';
+      const a=Math.random()*Math.PI*2, d=80+Math.random()*140;
+      b.style.setProperty('--dx',Math.cos(a)*d+'px');
+      b.style.setProperty('--dy',Math.sin(a)*d+'px');
+      document.body.appendChild(b);
+      setTimeout(()=>b.remove(),1500);
+    }
+  }
+
+  /* navigation */
+  const flow = ['s0','s1','s2','s3','s3b','s4','s5','s6'];
+  let current = 's0';
+  function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    current = id;
+    const idx = flow.indexOf(id);
+    const prog = el.querySelector('.progress');
+    if(prog){
+      prog.innerHTML = '';
+      for(let i=1;i<flow.length;i++){
+        const d=document.createElement('span'); if(i<=idx) d.classList.add('on'); prog.appendChild(d);
+      }
+    }
+    if(id==='s5') startLetter();
+  }
+  const nextOf = id => flow[flow.indexOf(id)+1];
+
+  document.getElementById('startHeart').addEventListener('click', e=>{
+    const r=e.currentTarget.getBoundingClientRect();
+    burst(r.left+r.width/2, r.top+r.height/2, 20);
+    setTimeout(()=>show('s1'), 450);
+  });
+
+  /* choice screens */
+  ['s1','s3','s3b'].forEach(id=>{
+    const sc=document.getElementById(id);
+    sc.querySelectorAll('.opts .btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        sc.querySelectorAll('.opts .btn').forEach(b=>b.classList.remove('chosen'));
+        btn.classList.add('chosen');
+        const r=sc.querySelector('.reaction'); r.textContent=btn.dataset.r.replace(/\{from\}/g, FROM); r.classList.add('show');
+        sc.querySelector('.next').classList.add('show');
+      });
+    });
+  });
+  document.querySelectorAll('.next').forEach(n=>n.addEventListener('click',()=>show(nextOf(current))));
+  document.querySelectorAll('#s4 .go').forEach(b=>b.addEventListener('click',()=>show('s5')));
+
+  /* slider */
+  const smile=document.getElementById('smile'), emo=document.getElementById('smileEmoji');
+  const s2=document.getElementById('s2');
+  smile.addEventListener('input',()=>{
+    const v=+smile.value;
+    emo.textContent = v<20?'😐':v<45?'🙂':v<70?'😊':v<90?'😄':'🥰';
+    const r=s2.querySelector('.reaction');
+    r.textContent = 'Whatever the number is, the world needs more of that smile 🌸';
+    r.classList.add('show');
+    s2.querySelector('.next').classList.add('show');
+  });
+
+  /* letter */
+  const lines = [
+    `Before you read this, know one thing: nothing here needs an answer from you. ❤️`,
+    `I know you've been hurt. Not once, but again and again, by people who said they would stay.`,
+    `Somewhere along the way, you started believing it's safer to feel nothing than to get hurt again.`,
+    `I don't blame you for that. Not even a little.`,
+    `But I wish you could see yourself the way I see you. ✨`,
+    `Someone who still has so much love inside, even after everything. Someone who deserved so much better than what she got. 🌸`,
+    `I can't erase your past. I won't pretend I can.`,
+    `But we can write new memories together. Ones that make you smile when you look back, not hurt. 🌷`,
+    `Late-night fries, katkati and chaat dates, silly fights over nothing, long drives with your favourite songs playing. 🍟🎶`,
+    `Let your past stay where it is. I just want to be part of what comes next. 👫`,
+    `And I can be the one who doesn't leave when things get hard. Who stays when you go quiet. Who's patient when you're scared.`,
+    `You don't have to trust me today. Let me earn it, slowly, through small things you can actually see.`,
+    `If you ever doubt me, ask me. If you ever feel scared, tell me. I'll hold your hand through it, not let go of it. 🤝`,
+    `Take one small step whenever you're ready. I'll be right there on the other side of it. 👣`,
+    `I don't want to be another chapter you have to heal from, ${TO}. I want to be the one that finally feels like home. 💗`
+  ];
+  let li=0, letterDone=false;
+  const letter=document.getElementById('letter'), lhint=document.getElementById('letterHint');
+  function startLetter(){ letter.innerHTML=''; li=0; letterDone=false; addLine(); }
+  function addLine(){
+    if(li<lines.length){
+      if(letter.children.length>=3) letter.removeChild(letter.firstChild);
+      const p=document.createElement('p');
+      p.className='line'+(li===lines.length-1?' final':'');
+      p.textContent=lines[li++];
+      letter.appendChild(p);
+      if(li===lines.length){
+        const s=document.createElement('p'); s.className='sign'; s.textContent='— '+FROM;
+        letter.appendChild(s);
+        lhint.innerHTML='<span class="arrow">👇</span>Tap to continue';
+        letterDone=true;
+      }
+    } else if(letterDone){ show('s6'); lhint.innerHTML='<span class="arrow">👇</span>Tap anywhere to keep reading'; }
+  }
+  document.getElementById('s5').addEventListener('click',()=>{ if(current==='s5') addLine(); });
+
+  /* answers */
+  document.getElementById('yesBtn').addEventListener('click',e=>{
+    burst(innerWidth/2, innerHeight/2, 30); setTimeout(()=>burst(innerWidth/3, innerHeight/3, 18),300);
+    show('s7a');
+  });
+  document.getElementById('timeBtn').addEventListener('click',()=>show('s7b'));
+
+  /* maker */
+  let prev='s0';
+  document.getElementById('openMaker').addEventListener('click',()=>{ if(current!=='maker'){prev=current;} show('maker'); });
+  document.getElementById('backBtn').addEventListener('click',()=>show(prev));
+  const genOut=document.getElementById('genOut'), genLink=document.getElementById('genLink');
+  document.getElementById('genBtn').addEventListener('click',()=>{
+    const f=clean(document.getElementById('fromIn').value), t=clean(document.getElementById('toIn').value);
+    if(!f||!t){ genOut.style.display='none'; alert('Please type both names 💗'); return; }
+    const url = location.origin + location.pathname + '?from=' + encodeURIComponent(f) + '&to=' + encodeURIComponent(t);
+    genLink.value=url; genOut.style.display='block';
+  });
+  document.getElementById('copyBtn').addEventListener('click',async e=>{
+    try{ await navigator.clipboard.writeText(genLink.value); }catch(_){ genLink.select(); document.execCommand('copy'); }
+    e.target.textContent='Copied! 💗'; setTimeout(()=>e.target.textContent='Copy',1500);
+  });
+  document.getElementById('previewBtn').addEventListener('click',()=>{ location.href=genLink.value; });
+})();
+</script>
+</body>
+</html>
