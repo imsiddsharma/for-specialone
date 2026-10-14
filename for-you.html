@@ -103,6 +103,7 @@
   <!-- 0: Intro -->
   <section class="screen active" id="s0">
     <h1>Hey <span class="to"></span> 💗</h1>
+    <p class="sub" id="nickIntro" style="display:none">Yes you, <b class="nick"></b> 😌</p>
     <p class="sub">Someone made this little thing<br>just for you.</p>
     <button class="big-heart" id="startHeart" aria-label="Open">💗</button>
     <div class="hint"><span class="arrow">☝️</span>Tap the heart to open</div>
@@ -153,7 +154,7 @@
     <h2>Very important question…<br>which soft toy would you hug first?</h2>
     <div class="opts two">
       <button class="btn" data-r="A classic teddy 🧸 Noted. But just saying… {from} gives better hugs 🤭">Classic teddy 🧸</button>
-      <button class="btn" data-r="Bunny! Soft and too cute 🐰 Noted. Though {from} is softer than he looks 🤭">Little bunny 🐰</button>
+      <button class="btn" data-r="Bunny! Soft and too cute 🐰 Noted. Though {from} is softer than he looks 🤭" data-rn="Bunny? Of course {nick} would pick the cutest one 🐰 Noted. Though {from} is softer than he looks 🤭">Little bunny 🐰</button>
       <button class="btn" data-r="Panda, the cutest choice 🐼 Noted. {from} can do the panda hug too, just saying 🤭">Fluffy panda 🐼</button>
       <button class="btn" data-r="No soft toys? Okay okay 😄 Then a real hug is the only option left 🙈">Not my thing 🙈</button>
       <button class="btn" style="grid-column:1/-1" data-r="Bold choice 🙈 {from} is officially available for hugs. No returns, no refunds 🤭💗">Skip the teddy, hug <span class="from"></span> 🙈</button>
@@ -197,6 +198,7 @@
   <section class="screen" id="s7a">
     <div class="end-emoji">🥹💗</div>
     <h1>One step at a time</h1>
+    <p class="sub" id="nickYes" style="display:none;font-weight:700;color:var(--pink-6);font-size:1.15rem;margin-bottom:10px">My <span class="nick"></span> said yes to baby steps 🥹💗</p>
     <p class="sub">That's all <span class="from"></span> could ever ask for.<br>No rush, no pressure. Just the two of you, slowly.</p>
     <div class="note">📸 Screenshot this and send it to <b class="from"></b>.<br>Trust me, it'll make their whole day.</div>
   </section>
@@ -217,6 +219,8 @@
     <input class="field" id="fromIn" maxlength="30" placeholder="e.g. Jay" autocomplete="off">
     <label for="toIn">Their name</label>
     <input class="field" id="toIn" maxlength="30" placeholder="e.g. Yukta" autocomplete="off">
+    <label for="nickIn">Their nickname (optional)</label>
+    <input class="field" id="nickIn" maxlength="30" placeholder="e.g. Nautanki" autocomplete="off">
     <div class="row"><button class="btn primary" id="genBtn">Create link 💗</button></div>
     <div id="genOut">
       <input class="field" id="genLink" readonly>
@@ -239,6 +243,13 @@
   const TO   = clean(params.get('to')   || params.get('r')) || 'Yukta';
   document.querySelectorAll('.from').forEach(e=>e.textContent=FROM);
   document.querySelectorAll('.to').forEach(e=>e.textContent=TO);
+  const hasNames = params.has('from') || params.has('to') || params.has('s') || params.has('r');
+  const NICK = clean(params.get('nick')) || (hasNames ? '' : 'Nautanki');
+  if(NICK){
+    document.querySelectorAll('.nick').forEach(e=>e.textContent=NICK);
+    document.getElementById('nickIntro').style.display='block';
+    document.getElementById('nickYes').style.display='block';
+  }
   document.title = 'For ' + TO + ' 💗';
 
   /* floating background */
@@ -304,7 +315,7 @@
       btn.addEventListener('click',()=>{
         sc.querySelectorAll('.opts .btn').forEach(b=>b.classList.remove('chosen'));
         btn.classList.add('chosen');
-        const r=sc.querySelector('.reaction'); r.textContent=btn.dataset.r.replace(/\{from\}/g, FROM); r.classList.add('show');
+        const r=sc.querySelector('.reaction'); r.textContent=((NICK && btn.dataset.rn) || btn.dataset.r).replace(/\{from\}/g, FROM).replace(/\{nick\}/g, NICK); r.classList.add('show');
         sc.querySelector('.next').classList.add('show');
       });
     });
@@ -378,6 +389,9 @@
     const f=clean(document.getElementById('fromIn').value), t=clean(document.getElementById('toIn').value);
     if(!f||!t){ genOut.style.display='none'; alert('Please type both names 💗'); return; }
     const url = location.origin + location.pathname + '?from=' + encodeURIComponent(f) + '&to=' + encodeURIComponent(t);
+    const n=clean(document.getElementById('nickIn').value);
+    const fullUrl = n ? url + '&nick=' + encodeURIComponent(n) : url;
+    genLink.value=fullUrl; genOut.style.display='block'; return;
     genLink.value=url; genOut.style.display='block';
   });
   document.getElementById('copyBtn').addEventListener('click',async e=>{
