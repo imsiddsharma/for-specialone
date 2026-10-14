@@ -233,7 +233,6 @@
   </section>
 </main>
 
-<div class="maker-link"><button id="openMaker">Make your own 💌</button></div>
 
 <script>
 (function(){
@@ -382,7 +381,7 @@
 
   /* maker */
   let prev='s0';
-  document.getElementById('openMaker').addEventListener('click',()=>{ if(current!=='maker'){prev=current;} show('maker'); });
+  document.getElementById('openMaker')?.addEventListener('click',()=>{ if(current!=='maker'){prev=current;} show('maker'); });
   document.getElementById('backBtn').addEventListener('click',()=>show(prev));
   const genOut=document.getElementById('genOut'), genLink=document.getElementById('genLink');
   document.getElementById('genBtn').addEventListener('click',()=>{
