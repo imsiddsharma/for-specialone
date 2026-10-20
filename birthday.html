@@ -444,17 +444,20 @@
   }
 
   /* music */
-  const SONG='kzTWRX9Dhrg';
+  const SONG='MUtVnZzQlwE', START=40;
   let player=null, ready=false, wantPlay=false, musicOn=false;
   const mBtn=document.getElementById('musicBtn');
   window.onYouTubeIframeAPIReady=function(){
     player=new YT.Player('yt',{width:200,height:120,videoId:SONG,
-      playerVars:{autoplay:0,controls:0,loop:1,playlist:SONG,playsinline:1,rel:0,modestbranding:1},
-      events:{onReady:()=>{ ready=true; player.setVolume(70); if(wantPlay) startMusic(); }}});
+      playerVars:{autoplay:0,controls:0,start:START,playsinline:1,rel:0,modestbranding:1},
+      events:{
+        onReady:()=>{ ready=true; player.setVolume(70); if(wantPlay) startMusic(); },
+        onStateChange:e=>{ if(e.data===YT.PlayerState.ENDED && musicOn){ player.seekTo(START,true); player.playVideo(); } }
+      }});
   };
   function startMusic(){
     wantPlay=true; if(!ready) return;
-    try{ player.playVideo(); musicOn=true; mBtn.classList.remove('hide'); mBtn.classList.add('playing'); mBtn.textContent='🎵'; }catch(_){}
+    try{ if((player.getCurrentTime()||0)<START) player.seekTo(START,true); player.playVideo(); musicOn=true; mBtn.classList.remove('hide'); mBtn.classList.add('playing'); mBtn.textContent='🎵'; }catch(_){}
   }
   mBtn.addEventListener('click',e=>{
     e.stopPropagation(); if(!ready) return;
